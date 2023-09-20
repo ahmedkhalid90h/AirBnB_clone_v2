@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-""" model to mange DB storage using sqlAlchemy """
+""" model to mange DB storage using sqlAlchemyv`c """
 import models
 from models.amenity import Amenity
 from models.base_model import BaseModel, Base
@@ -80,3 +80,8 @@ class DBStorage:
         """ Closing the session """
         self.reload()
         self.__session.close()
+from models.engine.file_storage import FileStorage
+
+
+storage = FileStorage()
+storage.reload()

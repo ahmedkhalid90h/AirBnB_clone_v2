@@ -73,7 +73,7 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline[2].strip()  # pline is now str
                 if pline:
                     # check for *args or **kwargs
-                    if pline[0] is '{' and pline[-1] is '}'\
+                    if pline[0] is '{' and pline[-1] is'}'\
                             and type(eval(pline)) is dict:
                         _args = pline
                     else:
@@ -118,39 +118,13 @@ class HBNBCommand(cmd.Cmd):
         if not args:
             print("** class name missing **")
             return
-
-        args_list = args.split()
-        class_name = args_list[0]
-
-        if class_name not in HBNBCommand.classes:
+        elif args not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-
-        args_list = args_list[1:]
-
-        obj_attributes = {}
-
-        for item in args_list:
-            key, value = item.split('=')
-
-            if value.startswith('"') and value.endswith('"'):
-                value = value[1:-1].replace('_', ' ')
-            else:
-                try:
-                    if '.' in value:
-                        value = float(value)
-                    else:
-                        value = int(value)
-                except ValueError:
-                    continue
-
-            obj_attributes[key] = value
-
-        new_instance = HBNBCommand.classes[class_name](**obj_attributes)
-
-        new_instance.save()
-
+        new_instance = HBNBCommand.classes[args]()
+        storage.save()
         print(new_instance.id)
+        storage.save()
 
     def help_create(self):
         """ Help information for the create method """
@@ -345,7 +319,6 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
-
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()

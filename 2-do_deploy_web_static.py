@@ -1,35 +1,34 @@
 #!/usr/bin/python3
-# Fabfile to distribute an archive to a web server running.
-from fabric.api import *
+# Fabfile to distribute an archive to a web server.
 import os.path
+from fabric.api import *
 
-env.hosts = ["54.144.150.9", "54.160.87.46"]
+env.hosts = ["52.91.151.201", "54.237.91.65"]
 
 
 def do_deploy(archive_path):
-    """Distributes an archive to a web server running.
+    """Distributes an archive to a web server.
 
     Args:
-        archive_path (str): The path of the archive to .
+        archive_path (str): The path of the archive to distribute.
     Returns:
-        If the file doesn't exist at archive_path or an error occurs - False is returned.
+        If the file doesn't exist at archive_path or an error occurs - False.
         Otherwise - True.
     """
     if exists(archive_path) is False:
         return False
-
     try:
-        file_n_ed = archive_path.split("/")[-1]
-        no_ext_ed = file_n_ed.split(".")[0]
-        path_ed = "/data/web_static/releases/"
+        file_n = archive_path.split("/")[-1]
+        no_ext = file_n.split(".")[0]
+        path = "/data/web_static/releases/"
         put(archive_path, '/tmp/')
-        run('mkdir -p {}{}/'.format(path_ed, no_ext_ed))
-        run('tar -xzf /tmp/{} -C {}{}/'.format(file_n_ed, path_ed, no_ext_ed))
-        run('rm /tmp/{}'.format(file_n_ed))
-        run('mv {0}{1}/web_static/* {0}{1}/'.format(path_ed, no_ext_ed))
-        run('rm -rf {}{}/web_static'.format(path_ed, no_ext_ed))
+        run('mkdir -p {}{}/'.format(path, no_ext))
+        run('tar -xzf /tmp/{} -C {}{}/'.format(file_n, path, no_ext))
+        run('rm /tmp/{}'.format(file_n))
+        run('mv {0}{1}/web_static/* {0}{1}/'.format(path, no_ext))
+        run('rm -rf {}{}/web_static'.format(path, no_ext))
         run('rm -rf /data/web_static/current')
-        run('ln -s {}{}/ /data/web_static/current'.format(path_ed, no_ext_ed))
+        run('ln -s {}{}/ /data/web_static/current'.format(path, no_ext))
         return True
     except:
         return False

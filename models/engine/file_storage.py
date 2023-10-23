@@ -9,8 +9,8 @@ class FileStorage:
     __objects = {}
 
     def all(self, cls=None):
-        """Returns a dictionary of models currently in storage amnding"""
-        if cls is not None:
+        """returns the dictionary __objects"""
+        if cls:
             new_dict = {}
             for key, value in self.__objects.items():
                 if cls == value.__class__ or cls == value.__class__.__name__:
@@ -33,14 +33,13 @@ class FileStorage:
 
     def reload(self):
         """Loads storage dictionary from file"""
-        from models.base_model import BaseModel
-        from models.user import User
-        from models.place import Place
-        from models.state import State
-        from models.city import City
         from models.amenity import Amenity
+        from models.base_model import BaseModel
+        from models.city import City
+        from models.place import Place
         from models.review import Review
-
+        from models.state import State
+        from models.user import User
         classes = {
                     'BaseModel': BaseModel, 'User': User, 'Place': Place,
                     'State': State, 'City': City, 'Amenity': Amenity,
@@ -51,17 +50,17 @@ class FileStorage:
             with open(FileStorage.__file_path, 'r') as f:
                 temp = json.load(f)
                 for key, val in temp.items():
-                        self.all()[key] = classes[val['__class__']](**val)
+                    self.all()[key] = classes[val['__class__']](**val)
         except FileNotFoundError:
             pass
+
     def delete(self, obj=None):
-        """delete obj from __objects if it’s inside __objects list"""
-        if obj is not None:
+        """Method that deletes obj from __objects"""
+        if obj:
             key = obj.__class__.__name__ + '.' + obj.id
             if key in self.__objects:
                 del self.__objects[key]
 
     def close(self):
-        """call reload() method for deserializing the JSON file to objects dsx"""
+        """ """
         self.reload()
-

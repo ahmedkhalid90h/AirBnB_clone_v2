@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-""" Place Module for HBNB project """
+"""Defines the Place class."""
 import models
 from os import getenv
 from models.base_model import Base
@@ -63,9 +63,7 @@ class Place(BaseModel, Base):
                     amenity_list.append(amenity)
             return amenity_list
 
-
         @amenities.setter
         def amenities(self, value):
             if type(value) == Amenity:
                 self.amenity_ids.append(value.id)
-

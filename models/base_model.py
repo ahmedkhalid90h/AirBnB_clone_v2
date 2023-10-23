@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 """This module defines a base class for all models in our hbnb clone"""
-import models
 from uuid import uuid4
+import models
+from datetime import datetime
 import sqlalchemy
 from sqlalchemy import Column, String, DateTime
-from datetime import datetime
 from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 
@@ -21,38 +21,37 @@ class BaseModel:
                         default=datetime.utcnow(),
                         nullable=False
                         )
-    
+
     def __init__(self, *args, **kwargs):
-        """Instatntiates a new model"""
+        """ init BaseModel """
         self.id = str(uuid4())
         self.created_at = datetime.utcnow()
         self.updated_at = self.created_at
-        # each new instance created is added to the storage variable __objects because
+        # each new instance created is added to the storage variable __objects
         if kwargs:
-            for keys, val in kwargs.items():
-                if keys in ("created_at", "updated_at"):
+            for key, val in kwargs.items():
+                if key in ("created_at", "updated_at"):
                     val = datetime.strptime(kwargs['updated_at'],
                                             '%Y-%m-%dT%H:%M:%S.%f')
-                if "__class__" not in keys:
-                    setattr(self, keys, val)
+                if "__class__" not in key:
+                    setattr(self, key, val)
 
     def __str__(self):
-        """ prints instance attributes """
-        dict_ = self.to_dict()
+        """ prints instance """
+        dict = self.to_dict()
         cls = str(type(self)).split('.')[-1].split('\'')[0]
         return "[{:s}] ({:s}) {}".format(cls, self.id,
-                                         dict_)
-
+                                         dict)
 
     def save(self):
-        """update: update_at timestamp"""
+        """update: update_at"""
         self.updated_at = datetime.utcnow()
-        # only when we save the instance, its writen into the json file and then.
+        # only when we save the instance, its writen into the json file
         models.storage.new(self)
         models.storage.save()
 
     def to_dict(self):
-        """returns a dictionary of keys/values of the instance s"""
+        """returns a dictionary of keys/values of the instance"""
         dictionary = {}
         dictionary.update(self.__dict__)
         try:
@@ -65,7 +64,6 @@ class BaseModel:
         dictionary['updated_at'] = self.updated_at.isoformat()
 
         return dictionary
-
 
     def delete(self):
         """ deletes object from storage """
